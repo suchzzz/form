@@ -1,7 +1,10 @@
 ﻿using Form_Backend.Models;
 using Form_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using System.IO;
 namespace Form_Backend.Controllers
+
 {
     [ApiController]
     [Route("api/Employees")]
@@ -70,50 +73,86 @@ namespace Form_Backend.Controllers
         //    }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]FormData newUser)
+        public async Task<IActionResult> UploadFile(FormData newUser)
         //public async Task<IActionResult> Post(Req abc)
         {
-            //var newUser= abc.newUser;
-            //var id = abc.id;
-            Console.WriteLine(newUser);
             try
             {
+                var savedPhotoPath = "";
+                if (newUser.Files != null)
+                {
+                    var uploadsDir = "wwwroot/uploads";
+                    if (!Directory.Exists(uploadsDir))
+                        Directory.CreateDirectory(uploadsDir);
+                    var fileName = Path.GetFileName(newUser.Files.FileName);
+                    savedPhotoPath = Path.Combine(uploadsDir, fileName);
+                    var tempPath = savedPhotoPath;
+
+
+                    //var i = 0;
+                    //while (File.Exists(tempPath))
+                    //{
+                    //    i++;
+                    //    tempPath = savedPhotoPath + i;
+                    //}
+                    //savedPhotoPath = tempPath;
+
+                    using (var stream = new FileStream(savedPhotoPath, FileMode.Create))
+                    {
+                        await newUser.Files.CopyToAsync(stream);
+                    }
+                }
+
                 var user = new EmployeeData
                 {
-                    Phone = newUser.Phone,
-                    EmpId = newUser.EmpId,
-                    EmpName = newUser.EmpName,
-                    BankAdd = newUser.BankAdd,
-                    AadharNumber = newUser.AadharNumber,
+                    
+                    Phone = newUser.Phone??"",
+                    EmpId = newUser.EmpId??"",
+                    EmpName = newUser.EmpName ?? "",
+                    BankAdd = newUser.BankAdd ?? "",
+                    AadharNumber = newUser.AadharNumber ?? "",
                     Status = newUser.Status,
                     MaratialStatus = newUser.MaratialStatus,
-                    CandidateSign = newUser.CandidateSign,
-                    BankAccountNumber = newUser.BankAccountNumber,
+                    BankAccountNumber = newUser.BankAccountNumber ?? "",
                     Birth = newUser.Birth,
                     BloodGroup = newUser.BloodGroup,
-                    CandidatePhoto = newUser.CandidatePhoto,
-                    Email = newUser.Email,
-                    FatherName = newUser.FatherName,
-                    IfscCode = newUser.IfscCode,
-                    PanNumber = newUser.PanNumber,
-                    PassportNumber = newUser.PassportNumber,
-                    PermanentAdress = newUser.PermanentAdress,
-                    PresentAdress = newUser.PresentAdress,
+                    Email = newUser.Email ?? "",
+                    FatherName = newUser.FatherName ?? "",
+                    IfscCode = newUser.IfscCode ?? "",
+                    PanNumber = newUser.PanNumber ?? "",
+                    PassportNumber = newUser.PassportNumber ?? "",
+                    PermanentAdress = newUser.PermanentAdress ?? "",
+                    PresentAdress = newUser.PresentAdress ?? "",
                     SameAsPresent = newUser.SameAsPresent,
                     RoleType = newUser.RoleType,
-                    IsDeleted = false
+                    IsDeleted = false,
+                    PhotoUrl = savedPhotoPath,
                 };
-                if (newUser.EditId == null)
-                    await _FormService.CreateAsync(user);
+                var userId = newUser.EditId;
+                if (newUser.EditId == "1")
+                    userId = await _FormService.CreateAsync(user);
                 else
-                    await _FormService.UpdateAsync(newUser.EditId, user);
+                    userId = await _FormService.UpdateAsync(newUser.EditId, user);
 
                 return Ok();
+
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return Ok(ex);
             }
         }
+        //[HttpPost("upload")]
+        //public async Task<IActionResult> Post([FromBody] FilesModel datas)
+        //{
+        //    var files = new FilesModel
+        //    {
+        //        CandidatePhoto = datas.CandidatePhoto,
+        //        CandidateSign = datas.CandidateSign
+        //    };
+        //    await _FormService.UpdateAsync();
+        //    return Ok();
+        //}
     }
 }

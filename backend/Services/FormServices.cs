@@ -1,15 +1,18 @@
 ﻿using Form_Backend.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 
 //using MongoDB.Bson;
 using MongoDB.Driver;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Form_Backend.Services
 {
     public class FormServices
     {
         private readonly IMongoCollection<EmployeeData> _formDatas;
+
         public FormServices(
         IOptions<FormDatabaseSetting> FormDatabaseSetting)
         {
@@ -35,6 +38,8 @@ namespace Form_Backend.Services
             public string Email { get; set; } = "";
 
             public string PresentAdress { get; set; } = "";
+            public string PhotoUrl { get; set; } = null;
+            public IFormFile Photo { get; set; }
             public string Phone { get; set; }
             public enum BloodGroupEnum
             {
@@ -61,7 +66,8 @@ namespace Form_Backend.Services
                 { "Email", 1 },
                 { "PresentAdress", 1 },
                 { "Phone", 1 },
-                { "BloodGroup", 1 }
+                { "BloodGroup", 1 },
+                {"PhotoUrl",1 },
             };
 
             var slNo = page * show;
@@ -90,6 +96,8 @@ namespace Form_Backend.Services
             {
                 item.Sl = (show * page) + i;
                 i++;
+
+                //item.Photo= File(item.PhotoUrl, "wwwroot/uploads");
             }
 
             GenericList<Res> list1 = new();
@@ -105,13 +113,24 @@ namespace Form_Backend.Services
         public async Task<EmployeeData> GetAsync(string id) =>
             await _formDatas.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(EmployeeData newUser) =>
+        public async Task<string> CreateAsync(EmployeeData newUser)
+        {
             await _formDatas.InsertOneAsync(newUser);
+            return newUser.Id;
+        }
 
-        public async Task UpdateAsync(string id, EmployeeData updatedFormData)
+        public async Task<string> UpdateAsync(string id, EmployeeData updatedFormData)
         {
             updatedFormData.Id = id;
             await _formDatas.ReplaceOneAsync(x => x.Id == id, updatedFormData);
+            return id;
         }
+        //public async Task<string> UpdateAsync(string id, FilesModel updatedFormData)
+        //{
+        //    updatedFormData.CandidatePhoto
+         
+        //    return { }
+        //    ;
+        //}
     }
 }

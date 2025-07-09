@@ -18,6 +18,7 @@ export interface IRes {
   empName: string,
   phone: string,
   presentAdress: string
+  PhotoUrl:string
 }
 const dropdownStyles: Partial<IDropdownStyles> = {
   dropdown: { width: 100 },
@@ -49,7 +50,7 @@ const Contents = ({ }) => {
       }
     })
       .then(function (response) {
-        // console.log(response.data)
+        console.log(response.data.response)
         setTotal(response.data.count);
         const data = response.data.response;
         data.map((d: IRes) => {
@@ -163,7 +164,7 @@ const Contents = ({ }) => {
   ];
 
   // const handleOpeningForm = (initialValues, isUpdating) => {
-  //   setInitialValues(initialValues);
+  //   setInitialVa lues(initialValues);
   //   setIsUpdating(isUpdating);
   //   setOpenSidebar(true);
   // };

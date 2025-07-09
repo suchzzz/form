@@ -5,8 +5,10 @@ const API_URL = import.meta.env.VITE_BASE_URL;
 export const saveData = async (formData, setSubmitting, id = null) => {
     let Config = {
         headers: {
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
         },
+        // responseType: "blob"
     };
     // if(formData.candidatePhoto)
     // {
@@ -14,10 +16,18 @@ export const saveData = async (formData, setSubmitting, id = null) => {
     // }
 
     formData.editId=id;
+    if(id==null)
+        formData.editId="1";
+    console.log(formData)
     // const data = {
     //     id,
     //     formData
     // }
+    // formData.files={
+    //     candidatePhoto:formData.candidatePhoto,
+    //     candidateSign:formData.candidateSign
+    // }
+    formData.Files=formData.candidatePhoto;
     try {
         const url = `${API_URL}/api/Employees`;
         const response = await axios.post(url,

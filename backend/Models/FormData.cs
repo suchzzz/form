@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Form_Backend.Models
 {
     [BsonIgnoreExtraElements]
-    public class FormData
+    public class FormData 
     {
         [BsonIgnoreIfNull, BsonIgnoreIfDefault]
         public string EmpName { get; set; }
@@ -75,13 +75,7 @@ namespace Form_Backend.Models
         [BsonIgnoreIfNull, BsonIgnoreIfDefault]
         [JsonPropertyName("sameAsPresent")]
         public bool SameAsPresent { get; set; }
-        [BsonIgnoreIfNull, BsonIgnoreIfDefault]
-        [JsonPropertyName("candidatePhoto")]
-        public string CandidatePhoto { get; set; }
-        [BsonIgnoreIfNull, BsonIgnoreIfDefault]
-        [JsonPropertyName("candidateSign")]
-        public string CandidateSign { get; set; }
-
+        
         //bank
         [BsonIgnoreIfNull, BsonIgnoreIfDefault]
         [JsonPropertyName("bankAccountNumber")]
@@ -104,13 +98,28 @@ namespace Form_Backend.Models
         [BsonIgnoreIfNull, BsonIgnoreIfDefault]
         [JsonPropertyName("editId")]
         public string EditId { get; set; }
+        [BsonIgnoreIfNull, BsonIgnoreIfDefault]
+        [JsonPropertyName("candidatePhoto")]
+        public IFormFile Files { get; set; } = null;
     }
-
-    public class EmployeeData : FormData
+    public class FilesModel
     {
+       
+        public IFormFile CandidatePhoto { get; set; }
+        //[BsonIgnoreIfNull, BsonIgnoreIfDefault] 
+        //[JsonPropertyName("candidateSign")]
+        //public IFormFile CandidateSign { get; set; }
+
+    }
+    
+
+    public class EmployeeData : FormData     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        public string PhotoUrl { get; set; }
+        //public string SignUrl { get; set; }
         public bool IsDeleted { get; set; } = false;
     }
 }

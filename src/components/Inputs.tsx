@@ -13,7 +13,7 @@ const days: IDropdownOption[] = [
   { text: 'Saturday', key: DayOfWeek.Saturday },
 ];
 const Inputs = ({ inputs, errors }) => {
-  const [file,setFile]=useState();
+  const [file, setFile] = useState();
   const { values, setFieldValue, handleBlur, handleChange, touched } = useFormikContext();
   // React.useEffect(()=>{
   //   console.log(values);
@@ -71,7 +71,7 @@ const Inputs = ({ inputs, errors }) => {
                   placeholder="Select a date..."
                   ariaLabel="Select a date"
                   strings={defaultDatePickerStrings}
-                  onChange={handleChange} 
+                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
                 <p className={errorStyle}>{touched[item.id] && errors[item.id]}</p>
@@ -155,7 +155,11 @@ const Inputs = ({ inputs, errors }) => {
             return (<Stack key={item.id} className={child}>
               <Label htmlFor={item.id} className={labell}>{item.label}</Label>
               <Stack>
-                <input type="file" onChange={handleChange}/>
+                <input type="file" onChange={(e) => {
+                  if (e.currentTarget.files) {
+                    setFieldValue(item.id, e.currentTarget.files[0]);
+                  }
+                }} />
                 <p className={errorStyle}>{touched[item.id] && errors[item.id]}</p>
               </Stack>
             </Stack>)

@@ -62,7 +62,7 @@ export const basicDetailSchmea= yup.object().shape({
     // candidatePhoto: yup.array().nullable(),
         // .required(),
 
-    candidateSign: yup.array().nullable(),
+    // candidateSign: yup.array().nullable(),
         // .required(),
 
 

@@ -27,7 +27,7 @@ const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdat
         permanentAdress: "dasdad",
         sameAsPresent: false,
         // candidatePhoto: "",
-        candidateSign: "",
+        // candidateSign: "",
         bankAccountNumber: "ssdsdsds",
         bankName: "sdadsa",
         ifscCode: "aasdadsada",

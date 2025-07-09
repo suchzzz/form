@@ -30,7 +30,7 @@ export interface IBasicDetail {
     permanentAdress: string,
     sameAsPresent: boolean,
     candidatePhoto: File,
-    candidateSign: string,
+    candidateSign: File,
 }
 export interface IBankDetails {
     bankAccountNumber: string,

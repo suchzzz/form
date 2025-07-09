@@ -1,7 +1,7 @@
 using Form_Backend.Models;
 using Form_Backend.Services;
+using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -35,6 +35,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();
