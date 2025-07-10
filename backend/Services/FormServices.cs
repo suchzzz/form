@@ -39,7 +39,6 @@ namespace Form_Backend.Services
 
             public string PresentAdress { get; set; } = "";
             public string PhotoUrl { get; set; } = null;
-            public IFormFile Photo { get; set; }
             public string Phone { get; set; }
             public enum BloodGroupEnum
             {
@@ -97,7 +96,6 @@ namespace Form_Backend.Services
                 item.Sl = (show * page) + i;
                 i++;
 
-                //item.Photo= File(item.PhotoUrl, "wwwroot/uploads");
             }
 
             GenericList<Res> list1 = new();

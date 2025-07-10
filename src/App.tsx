@@ -77,10 +77,10 @@ export const getClassNames = () => {
     right: {
       width: "100%",
       // padding: "5px ",
-      marginLeft: "20%"
+      marginLeft: "18%"
     },
     content: {
-      padding: "10px",
+      // padding: "10px",
     }
   });
 };

@@ -100,7 +100,7 @@ namespace Form_Backend.Models
         public string EditId { get; set; }
         [BsonIgnoreIfNull, BsonIgnoreIfDefault]
         [JsonPropertyName("candidatePhoto")]
-        public IFormFile Files { get; set; } = null;
+        public IFormFile? Files { get; set; } = null;
     }
     public class FilesModel
     {

@@ -11,6 +11,7 @@ import { bloodGroupEnum, maratialStatusEnum, statusEnum, roleTypeEnum } from '..
 const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdating,id }) => {
     const [submitting, setSubmitting] = useState(false);
     const defaultValues = {
+        // photoUrl: "",
         empName: "aaa",
         fatherName: "aaaa",
         birth: new Date(),
@@ -26,7 +27,7 @@ const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdat
         presentAdress: "aaaa",
         permanentAdress: "dasdad",
         sameAsPresent: false,
-        // candidatePhoto: "",
+        // candidatePhoto: "http://localhost:5087/uploads/capsitech.png",
         // candidateSign: "",
         bankAccountNumber: "ssdsdsds",
         bankName: "sdadsa",
@@ -75,7 +76,7 @@ const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdat
                         {({ errors, values }) => (
 
                             <FormikForm>
-                                {JSON.stringify(errors,null,2)}
+                                {/* {JSON.stringify(errors,null,2)} */}
                                 <div className={contentStyles.header}>
                                     <h2 className={contentStyles.heading} >
                                         Basic Information

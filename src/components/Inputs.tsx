@@ -116,14 +116,14 @@ const Inputs = ({ inputs, errors }) => {
           case "custom":
             return (<Stack key={item.id} className={child}>
               <Label htmlFor={item.id} className={labell}>{item.label}</Label>
-              <Stack className={custom}>
+              <Stack className={custom} >
                 {item.inputs.map((data) => {
                   // console.dir(data)
                   const ty = data.type;
                   switch (ty) {
                     case "enum":
                       return (
-                        <Stack>
+                        <Stack >
                           <Dropdown
                             placeholder="Select an option"
                             options={data.enums}
@@ -196,6 +196,7 @@ export const getClassNames = () => {
       },
     },
     custom: {
+      width: "40%",
       display: "flex",
       flexDirection: "row"
     },

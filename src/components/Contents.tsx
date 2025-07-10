@@ -18,13 +18,13 @@ export interface IRes {
   empName: string,
   phone: string,
   presentAdress: string
-  PhotoUrl:string
+  photoUrl: string
 }
 const dropdownStyles: Partial<IDropdownStyles> = {
   dropdown: { width: 100 },
 };
 const Contents = ({ }) => {
-  const[id,setId]=useState(null);
+  const [id, setId] = useState(null);
   const [openSidebar, setOpenSidebar] = useState<boolean>(false);
   const [query, setQuery] = useState("");
   const [data, setData] = useState([]);
@@ -50,11 +50,12 @@ const Contents = ({ }) => {
       }
     })
       .then(function (response) {
-        console.log(response.data.response)
+        // console.log(response.data.response)
         setTotal(response.data.count);
         const data = response.data.response;
         data.map((d: IRes) => {
           d.bloodGroup = getEnumVal(bloodGroupEnum, d.bloodGroup)
+           d.photoUrl = `${API_URL}/${d.photoUrl}`;
         })
         // console.log(data)
         setData(data)
@@ -118,25 +119,24 @@ const Contents = ({ }) => {
         return <Stack style={{ flexDirection: "row", gap: "10px" }}>
           <Icon iconName="Edit" className={editBtn}
             onClick={async (e, val) => {
-              try {
-                const res = await axios.get(`${API_URL}/api/Employees`, {
-                  params: {
-                    id: item.id
-                  }
-                });
+
+              axios.get(`${API_URL}/api/Employees`, {
+                params: {
+                  id: item.id
+                }
+              }).then((res) => {
                 const data = res.data;
-                // console.log(data);
                 setId(data.id);
-                data.bloodGroup=getEnumVal(bloodGroupEnum,data.bloodGroup);
-                data.maratialStatus=getEnumVal(maratialStatusEnum,data.maratialStatus);
+                data.bloodGroup = getEnumVal(bloodGroupEnum, data.bloodGroup);
+                data.maratialStatus = getEnumVal(maratialStatusEnum, data.maratialStatus);
                 console.log(data)
+                data.photoUrl = `${API_URL}/${data.photoUrl}`;
                 setInitialValues(data);
                 setIsUpdating(true);
                 setOpenSidebar(true);
-              } catch (err) {
-                console.error(err);
-              }
-            }}
+              })
+            }
+            }
           />
           <Icon iconName="Delete" className={editBtn} onClick={async () => {
             await deleteData(item.id);
@@ -160,7 +160,16 @@ const Contents = ({ }) => {
         </Stack>;
       },
     },
-
+    {
+      key: 'column9',
+      name: 'Image',
+      fieldName: 'photoUrl',
+      minWidth: 0,
+      maxWidth: 0,
+       onRender(item, index, column) {
+        return <img src={item.photoUrl}style={{width:"25px"}} alt="" />
+       }
+    },
   ];
 
   // const handleOpeningForm = (initialValues, isUpdating) => {
@@ -176,14 +185,14 @@ const Contents = ({ }) => {
 
   let { chevrons, icons, btn, editBtn } = getClassNames();
   return (
-    <Stack>
+    <Stack style={{padding:"15px"}}>
       <Stack style={{ flexDirection: "row", justifyContent: 'space-between' }}>
         <PrimaryButton text="+ ADD" onClick={() => {
           setInitialValues(null);
           setIsUpdating(false);
           setOpenSidebar(true);
         }} />
-        {openSidebar && <Form openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} isUpdating={isUpdating} id={id} setIsUpdating={setIsUpdating}  initialValues={initialValues} />}
+        {openSidebar && <Form openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} isUpdating={isUpdating} id={id} setIsUpdating={setIsUpdating} initialValues={initialValues} />}
         <SearchBox placeholder="Search"
           onChange={newVal => setQuery(newVal?.target?.value ?? "")}
         />

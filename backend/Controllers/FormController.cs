@@ -11,9 +11,12 @@ namespace Form_Backend.Controllers
     public class FormController : ControllerBase
     {
         private readonly FormServices _FormService;
-
-        public FormController(FormServices FormService) =>
+        private readonly IWebHostEnvironment _env;
+        public FormController(FormServices FormService, IWebHostEnvironment env)
+        {
+            _env = env;
             _FormService = FormService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<FormData>> Get(string id = null, int page = 0, int show = 0, string query = "")
@@ -81,33 +84,46 @@ namespace Form_Backend.Controllers
                 var savedPhotoPath = "";
                 if (newUser.Files != null)
                 {
-                    var uploadsDir = "wwwroot/uploads";
+                    var uploadsDir =_env.WebRootPath+"/uploads";
                     if (!Directory.Exists(uploadsDir))
                         Directory.CreateDirectory(uploadsDir);
                     var fileName = Path.GetFileName(newUser.Files.FileName);
                     savedPhotoPath = Path.Combine(uploadsDir, fileName);
                     var tempPath = savedPhotoPath;
+                    var length = savedPhotoPath.Length-4;
+                    
 
 
-                    //var i = 0;
-                    //while (File.Exists(tempPath))
-                    //{
-                    //    i++;
-                    //    tempPath = savedPhotoPath + i;
-                    //}
-                    //savedPhotoPath = tempPath;
-
-                    using (var stream = new FileStream(savedPhotoPath, FileMode.Create))
+                    var i = 0;
+                    while (Directory.GetFiles(uploadsDir).Contains(tempPath))
                     {
-                        await newUser.Files.CopyToAsync(stream);
+                        i++;
+                        var temp = savedPhotoPath.Substring(0,length);
+
+                        var extension = savedPhotoPath.Substring(length);
+                        tempPath = temp+i+extension;
+                        
+                    }
+                    savedPhotoPath = tempPath;
+
+                    using (var stream = new FileStream(savedPhotoPath, FileMode.CreateNew))
+                    {
+                        try
+                        {
+                            await newUser.Files.CopyToAsync(stream);
+                        }catch(Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
                     }
                 }
-
+                var index = savedPhotoPath.IndexOf("uploads");
+                savedPhotoPath = savedPhotoPath.Substring(index);
                 var user = new EmployeeData
                 {
-                    
-                    Phone = newUser.Phone??"",
-                    EmpId = newUser.EmpId??"",
+
+                    Phone = newUser.Phone ?? "",
+                    EmpId = newUser.EmpId ?? "",
                     EmpName = newUser.EmpName ?? "",
                     BankAdd = newUser.BankAdd ?? "",
                     AadharNumber = newUser.AadharNumber ?? "",
@@ -126,7 +142,9 @@ namespace Form_Backend.Controllers
                     SameAsPresent = newUser.SameAsPresent,
                     RoleType = newUser.RoleType,
                     IsDeleted = false,
-                    PhotoUrl = savedPhotoPath,
+                    PhotoUrl = savedPhotoPath??"",
+                    HolderName = newUser.HolderName??"",
+                    BankName = newUser.BankName??""
                 };
                 var userId = newUser.EditId;
                 if (newUser.EditId == "1")

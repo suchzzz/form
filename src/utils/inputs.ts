@@ -120,11 +120,11 @@ export const inputsBasic = [
         id: "candidatePhoto",
         type: "file"
     },
-    {
-        label: "Candidate Sign",
-        id: "candidateSign",
-        type: "file"
-    }
+    // {
+    //     label: "Candidate Sign",
+    //     id: "candidateSign",
+    //     type: "file"
+    // }
 ]
 
 export const inputsBank = [

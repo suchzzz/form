@@ -31,6 +31,7 @@ export interface IBasicDetail {
     sameAsPresent: boolean,
     candidatePhoto: File,
     candidateSign: File,
+    photoUrl:string,
 }
 export interface IBankDetails {
     bankAccountNumber: string,
