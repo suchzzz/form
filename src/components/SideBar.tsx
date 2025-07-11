@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { navLinkGroups } from "../utils/navLinkGroups"
 import { useNavigate } from 'react-router-dom';
-
+import { PrimaryButton, DefaultButton } from '@fluentui/react/lib/Button';
+import { useAuth } from '../context/AuthContext';
 const SideBar = () => {
     const [selected, setSelected] = useState<any>("key1");
     const [showPannel, setShowPannel] = useState<boolean>(true);
-    let { ham, pannel,navi } = getClassNames();
+    let { ham, pannel, navi } = getClassNames();
     const navigate = useNavigate();
+    const {logout}=useAuth();
     return (
         <Stack className={ham}>
             <Icon iconName="GlobalNavButton" />
@@ -33,6 +35,7 @@ const SideBar = () => {
                         }}
                         className={navi}
                     />
+                    <PrimaryButton text='Logout' onClick={logout}/>
                 </Stack>
             </Panel>
         </Stack>
@@ -47,9 +50,9 @@ export const getClassNames = () => {
         pannel: {
             maxWidth: "20%",
         },
-        navi:{
-            padding:'5px',
-            marginTop:"10px"
+        navi: {
+            padding: '5px',
+            marginTop: "10px"
         }
     });
 };

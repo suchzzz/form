@@ -8,12 +8,14 @@ namespace Form_Backend.Models
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Name { get; set; }
     }
     public class User : UserModel
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        public string Refresh_token { get; set; }
     }
 
 }

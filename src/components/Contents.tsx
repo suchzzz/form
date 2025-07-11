@@ -9,6 +9,7 @@ import { SearchBox } from "@fluentui/react"
 import Form from "../components/Form";
 import { IBasicDetail, IBankDetails, roleTypeEnum, statusEnum, maratialStatusEnum, bloodGroupEnum } from '../utils/formItems';
 import { deleteData } from "../utils/api";
+import { useAuth } from "../context/AuthContext";
 
 export interface IRes {
   id: string,
@@ -33,6 +34,7 @@ const Contents = ({ }) => {
   const [total, setTotal] = useState(0);
   const [initialValues, setInitialValues] = useState<IBasicDetail & IBankDetails | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const options: IDropdownOption[] = [
     { key: 2, text: '2' },
     { key: 5, text: '5' },
@@ -40,29 +42,36 @@ const Contents = ({ }) => {
     { key: 20, text: '20' },
   ];
 
+
   const API_URL = import.meta.env.VITE_BASE_URL;
+  const {validate}=useAuth();
+
   useEffect(() => {
+    validate();
     axios.get(`${API_URL}/api/Employees`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
       params: {
         page: page,
         show: show,
         query: query,
       }
-    })
+    },)
       .then(function (response) {
         // console.log(response.data.response)
         setTotal(response.data.count);
         const data = response.data.response;
         data.map((d: IRes) => {
           d.bloodGroup = getEnumVal(bloodGroupEnum, d.bloodGroup)
-           d.photoUrl = `${API_URL}/${d.photoUrl}`;
+          d.photoUrl = `${API_URL}/${d.photoUrl}`;
         })
         // console.log(data)
         setData(data)
       });
   }, [page, show, query, openSidebar])
 
-  // Remove local initialValues variable
+ 
 
   const columns: IColumn[] = [
     {
@@ -119,8 +128,11 @@ const Contents = ({ }) => {
         return <Stack style={{ flexDirection: "row", gap: "10px" }}>
           <Icon iconName="Edit" className={editBtn}
             onClick={async (e, val) => {
-
+              validate();
               axios.get(`${API_URL}/api/Employees`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                },
                 params: {
                   id: item.id
                 }
@@ -129,7 +141,7 @@ const Contents = ({ }) => {
                 setId(data.id);
                 data.bloodGroup = getEnumVal(bloodGroupEnum, data.bloodGroup);
                 data.maratialStatus = getEnumVal(maratialStatusEnum, data.maratialStatus);
-                console.log(data)
+                // console.log(data)
                 data.photoUrl = `${API_URL}/${data.photoUrl}`;
                 setInitialValues(data);
                 setIsUpdating(true);
@@ -140,7 +152,11 @@ const Contents = ({ }) => {
           />
           <Icon iconName="Delete" className={editBtn} onClick={async () => {
             await deleteData(item.id);
+            validate();
             axios.get(`${API_URL}/api/Employees`, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              },
               params: {
                 page: page,
                 show: show,
@@ -166,9 +182,9 @@ const Contents = ({ }) => {
       fieldName: 'photoUrl',
       minWidth: 0,
       maxWidth: 0,
-       onRender(item, index, column) {
-        return <img src={item.photoUrl}style={{width:"25px"}} alt="" />
-       }
+      onRender(item, index, column) {
+        return <img src={item.photoUrl} style={{ width: "25px" }} alt="" />
+      }
     },
   ];
 
@@ -185,7 +201,7 @@ const Contents = ({ }) => {
 
   let { chevrons, icons, btn, editBtn } = getClassNames();
   return (
-    <Stack style={{padding:"15px"}}>
+    <Stack style={{ padding: "15px" }}>
       <Stack style={{ flexDirection: "row", justifyContent: 'space-between' }}>
         <PrimaryButton text="+ ADD" onClick={() => {
           setInitialValues(null);

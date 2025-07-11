@@ -1,11 +1,13 @@
 import { Stack, TextField, PrimaryButton, DefaultButton, Text } from '@fluentui/react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-
+import { useAuth } from "../context/AuthContext"
+import axios from 'axios';
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const { setIsAuthnticated, setUser } = useAuth();
 
     const loginSchema = Yup.object().shape({
         email: Yup.string().email('Invalid email').required('Required'),
@@ -14,13 +16,51 @@ const Auth = () => {
 
     const signupSchema = Yup.object().shape({
         name: Yup.string().min(2, 'Too Short!').required('Required'),
-        email: Yup.string().email('Invalid email').required('Required'), 
+        email: Yup.string().email('Invalid email').required('Required'),
         password: Yup.string().min(6, 'Too Short!').required('Required'),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), ''], 'Passwords must match')
             .required('Required'),
     });
+    let Config = {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    const login = ((data) => {
+        const API_URL = import.meta.env.VITE_BASE_URL;
+        let Config = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        let token = "";
+        if (isLogin) {
+            axios.post(`${API_URL}/api/auth/login`, {
+                "email": data.email,
+                "password": data.password
+            }, Config).then((res) => {
+                console.log(res);
+                token = res.data.token;
+                localStorage.setItem("token", token);
+                setIsAuthnticated(true);
+                setUser(res.data.user);
+            })
+        }
+        else {
+            axios.post(`${API_URL}/api/auth`, {
+                "name": data.name,
+                "email": data.email,
+                "password": data.password
+            }, Config).then((res) => {
+                token = res.data.token;
+                localStorage.setItem("token", token);
+                setIsAuthnticated(true);
+                setUser(res.data.user);
+            })
+        }
 
+    })
     return (
         <Stack style={{ display: 'flex', width: '100%', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#f4f6fc' }}>
             <Stack style={{ minWidth: 350, padding: 32, boxShadow: '0 2px 8px #e0e0e0', borderRadius: 8, background: '#fff' }}>
@@ -31,7 +71,8 @@ const Auth = () => {
                     initialValues={isLogin ? { email: '', password: '' } : { name: '', email: '', password: '', confirmPassword: '' }}
                     validationSchema={isLogin ? loginSchema : signupSchema}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log(values);
+                        login(values);
+                        // console.log(values);
                         setSubmitting(false);
                     }}
                 >

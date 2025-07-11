@@ -1,11 +1,13 @@
 ﻿using Form_Backend.Models;
 using Form_Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System.IO;
 namespace Form_Backend.Controllers
 
 {
+    [Authorize]
     [ApiController]
     [Route("api/Employees")]
     public class FormController : ControllerBase

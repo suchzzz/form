@@ -1,37 +1,50 @@
 import axios from "axios";
-import { bloodGroupEnum, maratialStatusEnum, statusEnum, roleTypeEnum } from "./formItems";
+// import { useAuth } from "../context/AuthContext";
 const API_URL = import.meta.env.VITE_BASE_URL;
-
+// const {validate}=useAuth();
+const validate = (() => {
+    axios.get((`${API_URL}/api/auth/stillAuthorized`), {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    }).catch((res) => {
+      const status = res.status;
+      if (status == 401) {
+        axios.get((`${API_URL}/api/auth/getToken`), {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        }).then((res) => {
+          console.log("hio");
+          console.log(res);
+          if(res.status==200)
+            localStorage.setItem("token", res.data.newAcessToken);
+        }).catch(()=>{
+        //   localStorage.setItem("token","");
+        });
+      }
+    });
+  });
+const token = localStorage.getItem("token");
+// console.log(token);
 export const saveData = async (formData, setSubmitting, id = null) => {
     let Config = {
         headers: {
             // "Content-Type": "application/json",
             "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${token}`
+
         },
-        // responseType: "blob"
     };
-    // if(formData.candidatePhoto)
-    // {
-
-    // }
-
-    formData.editId=id;
-    if(id==null)
-        formData.editId="1";
+    formData.editId = id;
+    if (id == null)
+        formData.editId = "1";
     console.log(formData)
-    // const data = {
-    //     id,
-    //     formData
-    // }
-    // formData.files={
-    //     candidatePhoto:formData.candidatePhoto,
-    //     candidateSign:formData.candidateSign
-    // }
-    formData.Files=formData.candidatePhoto;
+    formData.Files = formData.candidatePhoto;
     try {
         const url = `${API_URL}/api/Employees`;
+        validate();
         const response = await axios.post(url,
-            // data,
             formData,
             Config);
         console.log(response);
@@ -48,10 +61,11 @@ export const deleteData = async (id: string) => {
     let Config = {
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
     };
     try {
-        // console.log(id);
+        validate();
         const response = await axios.post(`${API_URL}/api/Employees/delete`,
             id,
             Config

@@ -1,4 +1,6 @@
 ﻿using Form_Backend.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -35,34 +37,58 @@ namespace Form_Backend.Services
         {
             return await _userDatas.Find<User>(user => user.Id == id).FirstOrDefaultAsync();
         }
+        public async Task<User> GetUserByEmail(string email)
+        {
+            var x = await _userDatas.Find<User>(user => user.Email == email).FirstOrDefaultAsync();
+            return x;
+        }
         public User Create(User user)
         {
+            //var x= _userDatas.Find<User>(user => user.Email == user.Email).FirstOrDefaultAsync();
             _userDatas.InsertOneAsync(user);
             return user;
         }
 
-
-        public string Authenticate(string email, string password)
+        public async Task UpdateRefreshToken(string email,string token)
         {
-            var user = _userDatas.Find(x => x.Email == email && x.Password ==
-            password).FirstOrDefault();
-            if (user == null)
-                return null;
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenkey = Encoding.ASCII.GetBytes(key);
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(new Claim[]{
-                        new Claim (ClaimTypes.Email, email),
-                        }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenkey),
-                                            SecurityAlgorithms.Sha256)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var x = await _userDatas.Find<User>(user => user.Email == email).FirstOrDefaultAsync();
+
+            UpdateDefinitionBuilder<User> builder = Builders<User>.Update;
+            UpdateDefinition<User> update = builder.Set(f => f.Id,x.Id).Set("Refresh_token", token);
+            await _userDatas.UpdateOneAsync<User>(y => y.Id == x.Id,update);
         }
 
+        [AllowAnonymous]
+        public string Authenticate(string email, string password,int time)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                return null;
 
+            try
+            {
+                var user = _userDatas.Find(x => x.Email == email && x.Password == password).FirstOrDefault();
+                if (user == null)
+                    return null;
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenkey = Encoding.UTF8.GetBytes(key);
+                var tokenDescrpitor = new SecurityTokenDescriptor()
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                new Claim(ClaimTypes.Email, email),
+                    }),
+                    Expires = DateTime.UtcNow.AddSeconds(time),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenkey), SecurityAlgorithms.HmacSha256Signature)
+
+                };
+                var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescrpitor));
+                return token;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
