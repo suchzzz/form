@@ -78,7 +78,7 @@ namespace Form_Backend.Services
                     {
                 new Claim(ClaimTypes.Email, email),
                     }),
-                    Expires = DateTime.UtcNow.AddSeconds(time),
+                    Expires = DateTime.UtcNow.AddDays(time),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenkey), SecurityAlgorithms.HmacSha256Signature)
 
                 };

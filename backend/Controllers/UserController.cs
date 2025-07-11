@@ -98,14 +98,15 @@ namespace Form_Backend.Controllers
             var UserRefreshToken = data.Refresh_token;
             jsonToken = handler.ReadToken(UserRefreshToken) as JwtSecurityToken;
             var expirationDate = jsonToken.ValidTo;
-            if (expirationDate > DateTime.UtcNow)
-                return NotFound();
-            
-            var NewAcessToken = service.Authenticate(data.Email, data.Password,10);
-            var NewRefreshTOken= service.Authenticate(data.Email, data.Password, 60);
-            await service.UpdateRefreshToken(email, NewRefreshTOken);
-
-            return Ok(new { NewAcessToken, data });
+            if (expirationDate < DateTime.UtcNow)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                var NewAcessToken = service.Authenticate(data.Email, data.Password, 10);
+                return Ok(new { NewAcessToken, data });
+            }
         }
 
 
@@ -134,9 +135,6 @@ namespace Form_Backend.Controllers
             token = token.Replace("Bearer ", "");
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-           
-
             string email = jsonToken.Claims.First(claim=>claim.Type=="email").Value;
             var data = await service.GetUserByEmail(email);
             return Ok(data);

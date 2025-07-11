@@ -102,15 +102,14 @@ namespace Form_Backend.Models
         [JsonPropertyName("candidatePhoto")]
         public IFormFile? Files { get; set; } = null;
     }
-    public class FilesModel
-    {
-       
-        public IFormFile CandidatePhoto { get; set; }
+
+    //public class FilesModel
+    //{
+        //public IFormFile CandidatePhoto { get; set; }
         //[BsonIgnoreIfNull, BsonIgnoreIfDefault] 
         //[JsonPropertyName("candidateSign")]
         //public IFormFile CandidateSign { get; set; }
-
-    }
+    //}
     
 
     public class EmployeeData : FormData     {

@@ -45,11 +45,15 @@ builder.Services.AddAuthentication(x =>
     x.SaveToken = true;
     x.TokenValidationParameters = new TokenValidationParameters
     {
+        RequireExpirationTime = true,
+       
         ValidateIssuerSigningKey = true,
         //Might cause issue
 
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtKey").Value??"")),
         //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("CA852B728DD3445F17FAFA38725BCSDSDFSDFSD")),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromDays(10),
 
         ValidateIssuer = false,
         ValidateAudience = false
