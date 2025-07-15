@@ -32,6 +32,7 @@ export interface IBasicDetail {
     candidatePhoto: File,
     candidateSign: File,
     photoUrl:string,
+    isNew:boolean,
 }
 export interface IBankDetails {
     bankAccountNumber: string,

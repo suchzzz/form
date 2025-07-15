@@ -10,7 +10,10 @@ import { IStyle, mergeStyleSets } from '@fluentui/merge-styles';
 import { useAuth } from './context/AuthContext';
 import Auth from '../src/pages/Auth';
 import { useNavigate } from 'react-router-dom';
+import { Spinner } from '@fluentui/react';
 import Dashboard from './pages/Dashboard';
+import EmpAdd from '../src/components/EmpAdd';
+import { useEffect } from 'react';
 const theme = getTheme();
 
 // const styles = {
@@ -34,11 +37,16 @@ const theme = getTheme();
 // };
 const App = () => {
   const navigate = useNavigate();
-  const { isAuthnticated,role } = useAuth();
+  const { isAuthnticated, role, loading } = useAuth();
   initializeIcons();
   let { root, right, content } = getClassNames();
+
+
+  if (loading) {
+    return <Stack style={{ marginTop:"50vh",}}><Spinner label="Loading" /></Stack>;
+  }
   if (!isAuthnticated) {
-   return<Auth/>
+    return <Auth />
   }
   return (
     <Stack className={root}>
@@ -50,14 +58,15 @@ const App = () => {
         <Navbar />
         <Stack className={content}>
           <Routes >
-            <Route path='/' element={<Dashboard/>}/>
-            {role=="admin"&&<Route path="/emp" element={<HomePage />} />}
+            <Route path='/' element={<Dashboard />} />
+            {role == "admin" && <Route path="/emp" element={<HomePage />} />}
             <Route path="/leaves" element={<Tbd text="leaves" />} />
             <Route path="/attendance" element={<Tbd text="attendance" />} />
             <Route path="/report" element={<Tbd text="report" />} />
             <Route path="/event" element={<Tbd text="event" />} />
+            <Route path="/cp" element={<EmpAdd />} />
             <Route path="/policy" element={<Tbd text="policy" />} />
-            
+
           </Routes>
         </Stack>
       </Stack>

@@ -1,8 +1,10 @@
+import { Stack } from "@fluentui/react"
+
 const Tbd = ({text}) => {
   return (
-    <div>
+    <Stack style={{paddingLeft:"1%"}}>
       {text} is still Under Development
-    </div>
+    </Stack>
   )
 }
 

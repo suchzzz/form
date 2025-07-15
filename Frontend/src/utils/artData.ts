@@ -44,6 +44,7 @@ export const data=[{
   "_id": 4,
   "title": "The Great Wave off Kanagawa",
   "artist": "Hokusai",
+  "year": 1929,
   "price": {
     "$numberDecimal": "167.30"
   },

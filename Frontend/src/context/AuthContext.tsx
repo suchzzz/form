@@ -1,77 +1,87 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { INavLinkGroup } from '@fluentui/react';
-const AuthContext = createContext<{
+import { useNavigate } from 'react-router-dom';
+interface IUser{
+  email:string,
+  role:string,
+  changedPassword:boolean
+}
+interface IAuthContext {
   isAuthnticated: boolean,
-  user: {},
+  user: IUser,
+  // user:{},
   setUser: React.Dispatch<React.SetStateAction<{}>>,
   logout: () => void,
   validate: () => void,
-   role: string,
-   nav: INavLinkGroup[],
-   isLogin:boolean ,
-   login:(data:any)=>void,
-   setIsAuthnticated:React.Dispatch<React.SetStateAction<boolean>>,
-   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
-
-} | null>(null);
+  role: string,
+  nav: INavLinkGroup[],
+  isLogin: boolean,
+  login: (data: any) => void,
+  setIsAuthnticated: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean;
+}
+const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 const AuthProvider = ({ children }) => {
-
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_BASE_URL;
   const [isLogin, setIsLogin] = useState(true);
   const [isAuthnticated, setIsAuthnticated] = useState<boolean>(false);
   const [user, setUser] = useState({});
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [role, setRole] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(true);
   const [nav, setNav] = useState<INavLinkGroup[]>([{
-        links: [
-          {
-            name: 'Dashboard',
-            url: '/',
-            icon: 'DashboardAdd',
-            key: 'key1'
-          },
-          {
-            name: 'Leaves',
-            url: '/leaves',
-            key: 'key3',
-            icon: "Leave"
-          },
-          {
-            name: 'Attendance request',
-            url: '/attendance',
-            key: 'key4',
-            icon: "EventDateMissed12"
-          },
-          {
-            name: 'Report',
-            url: '/report',
-            key: 'key5',
-            icon: "ReportDocument"
-          },
-          {
-            name: 'Event',
-            url: '/event',
-            key: 'key6',
-            icon: "Event"
-          },
-          {
-            name: 'Company Policy',
-            url: '/policy',
-            key: 'key7',
-            icon: 'EntitlementPolicy',
-          },]
-      }]);
+    links: [
+      {
+        name: 'Dashboard',
+        url: '/',
+        icon: 'DashboardAdd',
+        key: 'key1'
+      },
+      {
+        name: 'Leaves',
+        url: '/leaves',
+        key: 'key3',
+        icon: "Leave"
+      },
+      {
+        name: 'Attendance request',
+        url: '/attendance',
+        key: 'key4',
+        icon: "EventDateMissed12"
+      },
+      {
+        name: 'Report',
+        url: '/report',
+        key: 'key5',
+        icon: "ReportDocument"
+      },
+      {
+        name: 'Event',
+        url: '/event',
+        key: 'key6',
+        icon: "Event"
+      },
+      {
+        name: 'Company Policy',
+        url: '/policy',
+        key: 'key7',
+        icon: 'EntitlementPolicy',
+      }]
+  }]);
 
-  const logout= (() => {
+  const logout = (() => {
     setUser({});
     setIsAuthnticated(false);
     localStorage.setItem("token", "");
     setRole("");
     setToken("")
+    setIsLogin(true);
   })
-  console.log(role);
+  // console.log(role);
 
   const validate = (() => {
     axios.get((`${API_URL}/api/auth/stillAuthorized`), {
@@ -88,69 +98,84 @@ const AuthProvider = ({ children }) => {
         }).then((res) => {
           // console.log("hio");
           if (res.status == 200)
-            localStorage.setItem("token", res.data.newAcessToken); 
+            localStorage.setItem("token", res.data.newAcessToken);
         }).catch(() => {
           // localStorage.setItem("token","");
         });
       }
     });
   });
-    const login = ((data) => {
-        const API_URL = import.meta.env.VITE_BASE_URL;
-        let Config = {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
-        let token = "";
-        setToken("");
-        if (isLogin) {
-            axios.post(`${API_URL}/api/auth/login`, {
-                "email": data.email,
-                "password": data.password
-            }, Config).then((res) => {
-                // console.log(res);
-                token = res.data.token;
-                setToken(token);
-                localStorage.setItem("token", token);
-                setIsAuthnticated(true);
-                setUser(res.data.user);
-            })
+  const login = ((data) => {
+    const API_URL = import.meta.env.VITE_BASE_URL;
+    let Config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    let token = "";
+    setToken("");
+    if (isLogin) {
+      axios.post(`${API_URL}/api/auth/login`, {
+        "email": data.email,
+        "password": data.password
+      }, Config).then((res) => {
+        console.log(res.data.user);
+        token = res.data.token;
+        setToken(token);
+        localStorage.setItem("token", token);
+        setIsAuthnticated(true);
+        //  console.log(res.data)
+        setUser(res.data);
+        
+        if (!res.data.user.changedPassword) {
+          navigate("cp")
         }
-        else {
-            axios.post(`${API_URL}/api/auth`, {
-                "name": data.name,
-                "email": data.email,
-                "password": data.password
-            }, Config).then((res) => {
-                token = res.data.token;
-                localStorage.setItem("token", token);
-                setIsAuthnticated(true);
-                setUser(res.data.user);
-            })
-        }
+      })
+    }
+    else {
+      axios.post(`${API_URL}/api/auth`, {
+        "name": data.name,
+        "email": data.email,
+        "password": data.password
+      }, Config).then((res) => {
+        token = res.data.token;
+        localStorage.setItem("token", token);
+        setIsAuthnticated(true);
+        //  console.log(res.data)
+        setUser(res.data);
+      })
+    }
+    navigate("/");
 
-    })
+  })
   useEffect(() => {
-    console.log("useEffect",token)
-    if (token == "")
+    // console.log("useEffect",token)
+    if (token == "") {
+      setLoading(false);
       return
-    
+    }
+
     validate();
-    console.log("after validate")
+    // console.log("after validate")
     axios.get(`${API_URL}/api/auth/me`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
     }).then((res) => {
-      console.log(res)
+      // console.log(res)
       if (res.statusText == 'OK') {
-        setUser(res.data.user);
+        // console.log(res.data)
+        setUser(res.data);
         setRole(res.data.role);
         setIsAuthnticated(true);
       }
+    }).finally(() => {
+      setLoading(false);
     })
   }, [isAuthnticated, token])
+  useEffect(() => {
+    // console.log(user);
+  }, [user])
 
   useEffect(() => {
     if (role == "admin") {
@@ -200,9 +225,8 @@ const AuthProvider = ({ children }) => {
       }])
     }
   }, [role])
-
   return (
-    <AuthContext.Provider value={{ isAuthnticated, setIsAuthnticated, user, setUser, logout, validate, role, nav,isLogin,login,setIsLogin}}>
+    <AuthContext.Provider value={{ isAuthnticated, setIsAuthnticated, user, setUser, logout, validate, role, nav, isLogin, login, setIsLogin, loading } as IAuthContext}>
       {children}
     </AuthContext.Provider>
   );

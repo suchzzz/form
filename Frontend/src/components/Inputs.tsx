@@ -159,7 +159,7 @@ const Inputs = ({ inputs, errors }) => {
                   if (e.currentTarget.files) {
                     setFieldValue(item.id, e.currentTarget.files[0]);
                   }
-                }} />
+                }} accept="image/*" />
                 <p className={errorStyle}>{touched[item.id] && errors[item.id]}</p>
               </Stack>
             </Stack>)

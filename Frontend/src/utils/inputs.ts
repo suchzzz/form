@@ -120,6 +120,11 @@ export const inputsBasic = [
         id: "candidatePhoto",
         type: "file"
     },
+    {
+        label: "New user?",
+        id: "isNew",
+        type: "boolean"
+    },
     // {
     //     label: "Candidate Sign",
     //     id: "candidateSign",

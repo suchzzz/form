@@ -73,7 +73,7 @@ const Contents = ({ }) => {
 
  
 
-  const columns: IColumn[] = [
+  const [columns,setColumns] =useState<IColumn[]>( [
     {
       key: 'column1',
       name: 'SL no.',
@@ -127,7 +127,7 @@ const Contents = ({ }) => {
       key: 'column8', name: '', fieldName: 'id', minWidth: 0, maxWidth: 0, onRender(item, index, column) {
         return <Stack style={{ flexDirection: "row", gap: "10px" }}>
           <Icon iconName="Edit" className={editBtn}
-            onClick={async (e, val) => {
+            onClick={async (e) => {
               validate();
               axios.get(`${API_URL}/api/Employees`, {
                 headers: {
@@ -169,7 +169,10 @@ const Contents = ({ }) => {
                 data.map((d) => {
                   d.bloodGroup = getEnumVal(bloodGroupEnum, d.bloodGroup)
                 })
-                setData(data)
+                setColumns(columns);
+                // setData(data)
+                changeData(data);
+
               });
           }}
           />
@@ -186,7 +189,10 @@ const Contents = ({ }) => {
         return <img src={item.photoUrl} style={{ width: "25px" }} alt="" />
       }
     },
-  ];
+  ]);
+  const changeData=((d)=>{
+    setData(d);
+  })
 
   // const handleOpeningForm = (initialValues, isUpdating) => {
   //   setInitialVa lues(initialValues);
@@ -203,11 +209,16 @@ const Contents = ({ }) => {
   return (
     <Stack style={{ padding: "15px" }}>
       <Stack style={{ flexDirection: "row", justifyContent: 'space-between' }}>
+        <Stack style={{display:"block"}}>
         <PrimaryButton text="+ ADD" onClick={() => {
           setInitialValues(null);
           setIsUpdating(false);
           setOpenSidebar(true);
         }} />
+        
+         {/* <PrimaryButton text="+ Employee" onClick={() => {
+        }} /> */}
+        </Stack>
         {openSidebar && <Form openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} isUpdating={isUpdating} id={id} setIsUpdating={setIsUpdating} initialValues={initialValues} />}
         <SearchBox placeholder="Search"
           onChange={newVal => setQuery(newVal?.target?.value ?? "")}

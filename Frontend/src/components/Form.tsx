@@ -10,6 +10,7 @@ import { bloodGroupEnum, maratialStatusEnum, statusEnum, roleTypeEnum } from '..
 
 const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdating,id }) => {
     const [submitting, setSubmitting] = useState(false);
+    
     const defaultValues = {
         // photoUrl: "",
         empName: "aaa",
@@ -34,7 +35,8 @@ const Form = ({ openSidebar, setOpenSidebar, initialValues,isUpdating,setIsUpdat
         ifscCode: "aasdadsada",
         holderName: "cvcvds",
         panNumber: "fdfs",
-        bankAdd: "fdsfsd"
+        bankAdd: "fdsfsd",
+        isNew:false
     };
     const formInitialValues = initialValues || defaultValues;
     

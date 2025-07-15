@@ -41,6 +41,7 @@ export const saveData = async (formData, setSubmitting, id = null) => {
         formData.editId = "1";
     // console.log(formData)
     formData.Files = formData.candidatePhoto;
+    // console.log(formData);
     try {
         const url = `${API_URL}/api/Employees`;
         validate();

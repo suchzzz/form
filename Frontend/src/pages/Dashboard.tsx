@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     let myHashMap = new Map();
-    const prop: d[] = [];
+    let prop: d[] = [];
     data.forEach(e => {
       prop.push({
         year: Number(e.year),
@@ -39,7 +39,8 @@ const Dashboard = () => {
       })
     });
 
-    prop.sort((a, b) => b.year - a.year);
+    prop=prop.sort((a, b) => a.year - b.year);
+    console.log(prop)
     setPr(prop);
     let a:number[]=[]
     let b:string[]=[]
