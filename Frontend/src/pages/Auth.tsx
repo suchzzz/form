@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { useAuth } from "../context/AuthContext"
 import axios from 'axios';
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState(true);
-    const { setIsAuthnticated, setUser } = useAuth();
+    
+    const { isLogin,login,setIsLogin } = useAuth();
 
     const loginSchema = Yup.object().shape({
         email: Yup.string().email('Invalid email').required('Required'),
@@ -27,40 +27,7 @@ const Auth = () => {
             "Content-Type": "application/json",
         },
     };
-    const login = ((data) => {
-        const API_URL = import.meta.env.VITE_BASE_URL;
-        let Config = {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
-        let token = "";
-        if (isLogin) {
-            axios.post(`${API_URL}/api/auth/login`, {
-                "email": data.email,
-                "password": data.password
-            }, Config).then((res) => {
-                console.log(res);
-                token = res.data.token;
-                localStorage.setItem("token", token);
-                setIsAuthnticated(true);
-                setUser(res.data.user);
-            })
-        }
-        else {
-            axios.post(`${API_URL}/api/auth`, {
-                "name": data.name,
-                "email": data.email,
-                "password": data.password
-            }, Config).then((res) => {
-                token = res.data.token;
-                localStorage.setItem("token", token);
-                setIsAuthnticated(true);
-                setUser(res.data.user);
-            })
-        }
 
-    })
     return (
         <Stack style={{ display: 'flex', width: '100%', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#f4f6fc' }}>
             <Stack style={{ minWidth: 350, padding: 32, boxShadow: '0 2px 8px #e0e0e0', borderRadius: 8, background: '#fff' }}>

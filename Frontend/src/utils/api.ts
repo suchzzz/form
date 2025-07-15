@@ -15,8 +15,8 @@ const validate = (() => {
             'Authorization': `Bearer ${token}`
           },
         }).then((res) => {
-          console.log("hio");
-          console.log(res);
+          // console.log("hio");
+          // console.log(res);
           if(res.status==200)
             localStorage.setItem("token", res.data.newAcessToken);
         }).catch(()=>{
@@ -39,7 +39,7 @@ export const saveData = async (formData, setSubmitting, id = null) => {
     formData.editId = id;
     if (id == null)
         formData.editId = "1";
-    console.log(formData)
+    // console.log(formData)
     formData.Files = formData.candidatePhoto;
     try {
         const url = `${API_URL}/api/Employees`;
@@ -47,7 +47,7 @@ export const saveData = async (formData, setSubmitting, id = null) => {
         const response = await axios.post(url,
             formData,
             Config);
-        console.log(response);
+        // console.log(response);
     } catch (e) {
         console.error(e);
         throw e;
@@ -57,7 +57,7 @@ export const saveData = async (formData, setSubmitting, id = null) => {
 };
 
 export const deleteData = async (id: string) => {
-    console.log(id);
+    // console.log(id);
     let Config = {
         headers: {
             "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export const deleteData = async (id: string) => {
             id,
             Config
         );
-        console.log(response);
+        // console.log(response);
     } catch (e) {
         console.error(e);
     }

@@ -1,0 +1,6 @@
+@RoleBackend_HostAddress = http://localhost:5294
+
+GET {{RoleBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,43 +1,60 @@
 import {  INavLinkGroup } from '@fluentui/react';
-export const navLinkGroups: INavLinkGroup[] = [
+const navLinkGroups: INavLinkGroup[] = [
     {
         links: [
             {
-                name: 'Dashboard',
-                url: '/',
-                key: 'key1',
-                icon: 'DashboardAdd',
+                name: 'Employyes',
+                url: '/emp',
+                key: 'key2',
+                icon: 'TemporaryUser',
             },
             {
                 name: 'Leaves',
                 url: '/leaves',
-                key: 'key2',
+                key: 'key3',
                 icon: "Leave"
             },
             {
                 name: 'Attendance request',
                 url: '/attendance',
-                key: 'key3',
+                key: 'key4',
                 icon: "EventDateMissed12"
             },
             {
                 name: 'Report',
                 url: '/report',
-                key: 'key4',
+                key: 'key5',
                 icon: "ReportDocument"
             },
             {
                 name: 'Event',
                 url: '/event',
-                key: 'key5',
+                key: 'key6',
                 icon: "Event"
             },
             {
                 name: 'Company Policy',
                 url: '/policy',
-                key: 'key6',
+                key: 'key7',
                 icon: 'EntitlementPolicy',
             },
         ],
     },
 ];
+
+
+
+export const getNavLinks=((userType)=>{
+    if(userType=="admin")
+    {
+        const dash={
+                name:'Dashboard',
+                url:'/',
+                icon: 'DashboardAdd',
+                key:'key1'
+            };
+        navLinkGroups?.[0].links.unshift(dash);
+    }
+    return navLinkGroups;
+
+})

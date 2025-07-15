@@ -7,9 +7,10 @@ import { Stack, IStackStyles, IStackTokens } from '@fluentui/react/lib/Stack';
 import { getTheme, initializeIcons } from '@fluentui/react';
 // import { mergeStyles, DefaultPalette } from '@fluentui/react/lib/Styling'; 
 import { IStyle, mergeStyleSets } from '@fluentui/merge-styles';
-import { useAuth } from '../src/context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import Auth from '../src/pages/Auth';
 import { useNavigate } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
 const theme = getTheme();
 
 // const styles = {
@@ -33,7 +34,7 @@ const theme = getTheme();
 // };
 const App = () => {
   const navigate = useNavigate();
-  const { isAuthnticated } = useAuth();
+  const { isAuthnticated,role } = useAuth();
   initializeIcons();
   let { root, right, content } = getClassNames();
   if (!isAuthnticated) {
@@ -49,7 +50,8 @@ const App = () => {
         <Navbar />
         <Stack className={content}>
           <Routes >
-            <Route path="/" element={<HomePage />} />
+            <Route path='/' element={<Dashboard/>}/>
+            {role=="admin"&&<Route path="/emp" element={<HomePage />} />}
             <Route path="/leaves" element={<Tbd text="leaves" />} />
             <Route path="/attendance" element={<Tbd text="attendance" />} />
             <Route path="/report" element={<Tbd text="report" />} />

@@ -1,17 +1,20 @@
 import { Icon } from '@fluentui/react/lib/Icon';
 import { Nav, Stack, mergeStyleSets } from '@fluentui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
-import { navLinkGroups } from "../utils/navLinkGroups"
+import { getNavLinks } from "../utils/routes"
+import { INavLinkGroup } from '@fluentui/react';
 import { useNavigate } from 'react-router-dom';
 import { PrimaryButton, DefaultButton } from '@fluentui/react/lib/Button';
 import { useAuth } from '../context/AuthContext';
 const SideBar = () => {
+
     const [selected, setSelected] = useState<any>("key1");
     const [showPannel, setShowPannel] = useState<boolean>(true);
     let { ham, pannel, navi } = getClassNames();
     const navigate = useNavigate();
-    const {logout}=useAuth();
+    const { logout, role,nav } = useAuth();
+
     return (
         <Stack className={ham}>
             <Icon iconName="GlobalNavButton" />
@@ -27,7 +30,7 @@ const SideBar = () => {
                 <Stack>
                     <img src="capsitech.jpg" width={"50%"} alt="" />
                     <Nav selectedKey={selected} ariaLabel="Nav example with wrapped link text"
-                        groups={navLinkGroups}
+                        groups={nav}
                         onLinkClick={(ev, item) => {
                             ev?.preventDefault();
                             navigate(item?.url ?? "")
@@ -35,7 +38,7 @@ const SideBar = () => {
                         }}
                         className={navi}
                     />
-                    <PrimaryButton text='Logout' onClick={logout}/>
+                    <PrimaryButton text='Logout' onClick={logout} />
                 </Stack>
             </Panel>
         </Stack>
