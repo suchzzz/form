@@ -6,9 +6,11 @@ interface IUser{
   email:string,
   role:string,
   changedPassword:boolean
+  OrgId:string;
 }
 interface IAuthContext {
   isAuthnticated: boolean,
+  changedPassword:boolean,
   user: IUser,
   // user:{},
   setUser: React.Dispatch<React.SetStateAction<{}>>,
@@ -20,20 +22,11 @@ interface IAuthContext {
   login: (data: any) => void,
   setIsAuthnticated: React.Dispatch<React.SetStateAction<boolean>>,
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean;
+  loading: boolean,
+  setChangedPassword:React.Dispatch<React.SetStateAction<boolean>>,
 }
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
-
-const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_BASE_URL;
-  const [isLogin, setIsLogin] = useState(true);
-  const [isAuthnticated, setIsAuthnticated] = useState<boolean>(false);
-  const [user, setUser] = useState({});
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [role, setRole] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(true);
-  const [nav, setNav] = useState<INavLinkGroup[]>([{
+const initalLinks=[{
     links: [
       {
         name: 'Dashboard',
@@ -71,13 +64,25 @@ const AuthProvider = ({ children }) => {
         key: 'key7',
         icon: 'EntitlementPolicy',
       }]
-  }]);
+  }];
+const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_BASE_URL;
+  const [isLogin, setIsLogin] = useState(true);
+  const [isAuthnticated, setIsAuthnticated] = useState<boolean>(false);
+  const [user, setUser] = useState({});
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [role, setRole] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(true);
+  const [changedPassword,setChangedPassword]=useState<boolean>(true)
+  const [nav, setNav] = useState<INavLinkGroup[]>(initalLinks);
 
   const logout = (() => {
     setUser({});
     setIsAuthnticated(false);
     localStorage.setItem("token", "");
     setRole("");
+    setNav(initalLinks);
     setToken("")
     setIsLogin(true);
   })
@@ -128,6 +133,7 @@ const AuthProvider = ({ children }) => {
         setUser(res.data);
         
         if (!res.data.user.changedPassword) {
+          setChangedPassword(false)
           navigate("cp")
         }
       })
@@ -140,13 +146,15 @@ const AuthProvider = ({ children }) => {
       }, Config).then((res) => {
         token = res.data.token;
         localStorage.setItem("token", token);
+        setToken(token);
         setIsAuthnticated(true);
+        setRole("admin");
         //  console.log(res.data)
         setUser(res.data);
+      
       })
     }
     navigate("/");
-
   })
   useEffect(() => {
     // console.log("useEffect",token)
@@ -224,9 +232,13 @@ const AuthProvider = ({ children }) => {
           },]
       }])
     }
+    else
+    {
+      setNav(initalLinks);
+    }
   }, [role])
   return (
-    <AuthContext.Provider value={{ isAuthnticated, setIsAuthnticated, user, setUser, logout, validate, role, nav, isLogin, login, setIsLogin, loading } as IAuthContext}>
+    <AuthContext.Provider value={{ isAuthnticated, setIsAuthnticated, user, changedPassword,setUser, logout, validate, role, nav, isLogin, login, setIsLogin, setChangedPassword,loading } as IAuthContext}>
       {children}
     </AuthContext.Provider>
   );

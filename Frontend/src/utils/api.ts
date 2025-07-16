@@ -37,6 +37,8 @@ export const saveData = async (formData, setSubmitting, id = null) => {
         },
     };
     formData.editId = id;
+    formData.orgId="1";
+    console.log(formData);
     if (id == null)
         formData.editId = "1";
     // console.log(formData)

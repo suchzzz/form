@@ -30,7 +30,7 @@ const Contents = ({ }) => {
   const [query, setQuery] = useState("");
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
-  const [show, setShow] = useState(Number(localStorage.getItem("show")) ?? 2);
+  const [show, setShow] = useState(Number(localStorage.getItem("show")??5));
   const [total, setTotal] = useState(0);
   const [initialValues, setInitialValues] = useState<IBasicDetail & IBankDetails | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);

@@ -37,7 +37,7 @@ const theme = getTheme();
 // };
 const App = () => {
   const navigate = useNavigate();
-  const { isAuthnticated, role, loading } = useAuth();
+  const { isAuthnticated, role, loading,changedPassword } = useAuth();
   initializeIcons();
   let { root, right, content } = getClassNames();
 
@@ -47,6 +47,10 @@ const App = () => {
   }
   if (!isAuthnticated) {
     return <Auth />
+  }
+  if(!changedPassword)
+  {
+    return <EmpAdd/>
   }
   return (
     <Stack className={root}>
@@ -64,7 +68,7 @@ const App = () => {
             <Route path="/attendance" element={<Tbd text="attendance" />} />
             <Route path="/report" element={<Tbd text="report" />} />
             <Route path="/event" element={<Tbd text="event" />} />
-            <Route path="/cp" element={<EmpAdd />} />
+            {/* <Route path="/cp" element={<EmpAdd />} /> */}
             <Route path="/policy" element={<Tbd text="policy" />} />
 
           </Routes>

@@ -10,7 +10,7 @@ import axios from 'axios';
 const EmpAdd = () => {
     
   const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user,setChangedPassword } = useAuth();
     const [displayText, setDisplayText] = useState<string>("");
     const AddUserSchema = Yup.object().shape({
         password: Yup.string().min(6, 'Too Short!').required('Required'),
@@ -40,6 +40,7 @@ const EmpAdd = () => {
                     setDisplayText("");
                 }, 2000);
             }).then(()=>{
+                setChangedPassword(true);
                 navigate("/");
             })
     })
