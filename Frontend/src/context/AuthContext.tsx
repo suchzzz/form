@@ -104,6 +104,7 @@ const AuthProvider = ({ children }) => {
           // console.log("hio");
           if (res.status == 200)
             localStorage.setItem("token", res.data.newAcessToken);
+            setToken(res.data.newAcessToken)
         }).catch(() => {
           // localStorage.setItem("token","");
         });
